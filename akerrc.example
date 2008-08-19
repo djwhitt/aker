@@ -1,0 +1,3 @@
+id_file: "/home/someuser/doc/id.yml.gpg"
+user: "someuser@example.com"
+tmp_dir: "/home/someuser/tmp/"
