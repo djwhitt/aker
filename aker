@@ -4,7 +4,7 @@ require 'fileutils'
 require 'getoptlong'
 require 'yaml'
 
-include FileUtils::Verbose
+include FileUtils
 
 conf = YAML.load_file("#{ENV['HOME']}/.akerrc")
 $id_file = conf['id_file']
@@ -38,8 +38,8 @@ def edit
   id_file_bn = File.basename($id_file)
   id_file_bn_noext = File.basename($id_file, ".gpg")
 
-  cp($id_file, "#{id_file_bn}.bak")
-  tmp_file = `mktemp --tmpdir=#{$tmp_dir} #{id_file_bn_noext}.tmp.XXXXXXXXXX`
+  cp($id_file, "#{$id_file}.bak")
+  tmp_file = `mktemp -p=#{$tmp_dir} #{id_file_bn_noext}.tmp.XXXXXXXXXX`
   tmp_file.chomp!
   system("gpg -q -d #{$id_file} > #{tmp_file}")
   cp(tmp_file, "#{tmp_file}.orig")
