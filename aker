@@ -39,7 +39,7 @@ def edit
   id_file_bn_noext = File.basename($id_file, ".gpg")
 
   cp($id_file, "#{$id_file}.bak")
-  tmp_file = `mktemp -p=#{$tmp_dir} #{id_file_bn_noext}.tmp.XXXXXXXXXX`
+  tmp_file = `mktemp -p #{$tmp_dir} #{id_file_bn_noext}.tmp.XXXXXXXXXX`
   tmp_file.chomp!
   system("gpg -q -d #{$id_file} > #{tmp_file}")
   cp(tmp_file, "#{tmp_file}.orig")
