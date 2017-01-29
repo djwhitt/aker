@@ -11,15 +11,16 @@ $id_file = conf['id_file']
 $user = conf['user']
 $tmp_dir = conf['tmp_dir']
 $editor = conf['editor'] || ENV['EDITOR']
+$gpg_cmd = conf['gpg_cmd'] || 'gpg'
 
 def list
-  yaml = IO.popen("gpg -q -d #{$id_file}")
+  yaml = IO.popen("#{$gpg_cmd} -q -d #{$id_file}")
   id_entries = YAML.load(yaml)
   puts id_entries.keys.sort.join("\n")
 end
 
 def search(search_str)
-  yaml = IO.popen("gpg -q -d #{$id_file}")
+  yaml = IO.popen("#{$gpg_cmd} -q -d #{$id_file}")
   id_entries = YAML.load(yaml)
   first = true
 
@@ -41,11 +42,11 @@ def edit
   cp($id_file, "#{$id_file}.bak")
   tmp_file = `mktemp -p #{$tmp_dir} #{id_file_bn_noext}.tmp.XXXXXXXXXX`
   tmp_file.chomp!
-  system("gpg -q -d #{$id_file} > #{tmp_file}")
+  system("#{$gpg_cmd} -q -d #{$id_file} > #{tmp_file}")
   cp(tmp_file, "#{tmp_file}.orig")
   system("#{$editor} #{tmp_file}")
   unless system("diff #{tmp_file} #{tmp_file}.orig > /dev/null")
-    if system("gpg -e -r #{$user} #{tmp_file}")
+    if system("#{$gpg_cmd} -e -r #{$user} #{tmp_file}")
       mv("#{tmp_file}.gpg", $id_file)
     end
   end
